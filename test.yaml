@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python
+  labels:
+    app: python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python
+  template:
+    metadata:
+      labels:
+        app: python
+    spec:
+      containers:
+      - name: python
+        image: pyflask:latest
+        imagePullPolicy: Never
+        ports:
+          - containerPort: 5000
+        command:
+            - "bash"
+            - "-c"
+            - >  
+              flask run --host=0.0.0.0
+
+---
+apiVersion: v1
+kind: Service 
+metadata:
+  name: pytohn
+spec:
+  selector:
+    app: python
+  ports:
+    - protocol: TCP
+      port: 5000   
+      nodePort: 5000
+      targetPort: 5000
+  type: NodePort
